@@ -1,4 +1,4 @@
-# 2019-ads
+# Алгоритмы и структуры данных
 Задаи для курса "Алгоритмы и структуры данных" 2019 года
 [курса](https://polis.mail.ru/curriculum/program/discipline/836/) в [Технополис](https://polis.mail.ru).
 
