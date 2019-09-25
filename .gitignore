@@ -12,6 +12,7 @@
 !.travis.yml
 !build.gradle.kts
 !gradlew
+!gradlew.bat
 !LICENSE
 !README.md
 !settings.gradle
