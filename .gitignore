@@ -1,0 +1,24 @@
+# Ignore everything
+*
+
+# But not Java files...
+!.gitignore
+!*.java
+
+# And not Gradle Wrapper stuff
+!gradle/wrapper/*
+
+# And CI
+!.travis.yml
+!build.gradle.kts
+!gradlew
+!LICENSE
+!README.md
+!settings.gradle
+!.circleci/*
+!.codeclimate.yml
+!checkstyle.xml
+!.lgtm.yml
+
+# ...even if they are in subdirectories
+!*/
