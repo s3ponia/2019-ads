@@ -1,20 +1,16 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
-import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
  * https://www.e-olymp.com/ru/submissions/5735965
  */
 public class PseudoRLE {
-    private PseudoRLE() {
-    }
-
-    private static String repeatString(String string, int quantity) {
+    private static String repeatString(final String inputString, int numberOfRepeats) {
         final StringBuilder result = new StringBuilder();
 
-        while (quantity-- > 0) {
-            result.append(string);
+        while (numberOfRepeats-- > 0) {
+            result.append(inputString);
         }
 
         return result.toString();
@@ -32,19 +28,22 @@ public class PseudoRLE {
 
             return (e - b + 1) / (temp - b + 1) + "(" + printSolution(input, b, temp, arrayRestore) + ")";
         } else {
-            return printSolution(input, b, arrayRestore[b][e] - 1, arrayRestore) + printSolution(input, arrayRestore[b][e], e, arrayRestore);
+            return printSolution(input, b, arrayRestore[b][e] - 1, arrayRestore) +
+                    printSolution(input, arrayRestore[b][e], e, arrayRestore);
         }
     }
 
-    private static void solve(final Scanner in, final PrintWriter out) {
-        final String input=in.next();
-
-        int size = input.length();
-        // arrayDinamic[i][j] - smallest size for part of the input from i to j
+    private static String getCompressedString(final String input) {
+        final int size = input.length();
+        // arrayDinamic[i][j] -
+        // smallest size for part of the input from i to j
         int[][] arraySmallestSizePartCanBe = new int[size][size];
-        // arrayRestoreValue[i][j] = 0 - part from i to j is without compression
-        // arrayRestoreValue[i][j] < 0 - repeat of part from i to |arrayRestoreValue[i][j]|-1
-        // arrayRestoreValue[i][j] > 0 - part from i to arrayRestoreValue[i][j]-1 and from arrayRestoreValue[i][j] to j are compressed
+        // arrayRestoreValue[i][j] = 0 -
+        // part from i to j is without compression
+        // arrayRestoreValue[i][j] < 0 -
+        // repeat of part from i to |arrayRestoreValue[i][j]|-1
+        // arrayRestoreValue[i][j] > 0 -
+        // part from i to arrayRestoreValue[i][j]-1 and from arrayRestoreValue[i][j] to j are compressed
         int[][] arrayRestoreValue = new int[size][size];
 
         // searching size of compressed input
@@ -67,13 +66,17 @@ public class PseudoRLE {
                 int temp;
                 for (int k = i; k < j; k++) {
                     final int eqCount = (j - k) / (k - i + 1);
-                    if ((j - k) % (k - i + 1) == 0 && repeatString(input.substring(i, k + 1), eqCount).equals(input.substring(k + 1, j + 1))) {
-                        temp = arraySmallestSizePartCanBe[i][k] + 2 + Integer.toString(eqCount + 1).length();
-                        if (arraySmallestSizePartCanBe[i][j] == -1 || temp < arraySmallestSizePartCanBe[i][j]) {
-                            arraySmallestSizePartCanBe[i][j] = temp;
-                            arrayRestoreValue[i][j] = -(k + 1);
-                        }
-
+                    if ((j - k) % (k - i + 1) == 0 &&
+                            repeatString(input.substring(i, k + 1), eqCount).equals(input.substring(k + 1, j + 1)) &&
+                            (arraySmallestSizePartCanBe[i][j] == -1 |
+                                    (temp = arraySmallestSizePartCanBe[i][k] + 2 +
+                                            Integer.toString(eqCount + 1).length())
+                                            <
+                                            arraySmallestSizePartCanBe[i][j]
+                            )
+                    ) {
+                        arraySmallestSizePartCanBe[i][j] = temp;
+                        arrayRestoreValue[i][j] = -(k + 1);
                     }
 
                     temp = arraySmallestSizePartCanBe[i][k] + arraySmallestSizePartCanBe[k + 1][j];
@@ -85,13 +88,11 @@ public class PseudoRLE {
             }
         }
 
-        out.println(printSolution(input, 0, input.length() - 1, arrayRestoreValue));
+        return printSolution(input, 0, input.length() - 1, arrayRestoreValue);
     }
 
     public static void main(final String[] arg) {
         final Scanner in = new Scanner(System.in);
-        try (PrintWriter out = new PrintWriter(System.out)) {
-            solve(in, out);
-        }
+        System.out.println(getCompressedString(in.next()));
     }
 }

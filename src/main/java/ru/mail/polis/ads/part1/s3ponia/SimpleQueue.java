@@ -7,39 +7,34 @@ import java.util.Scanner;
  * https://www.e-olymp.com/ru/submissions/5736452
  */
 public class SimpleQueue {
-
-    private SimpleQueue() {
-    }
-
-    private static void solve(final Scanner in, final PrintWriter out) {
+    private static void solve(final Scanner in) {
         final Queue queue = new Queue();
         endless:
         while (true) {
             switch (in.next()) {
                 case "push":
                     queue.push(in.nextInt());
-                    out.println("ok");
+                    System.out.println("ok");
                     break;
                 case "pop":
-                    out.println(queue.pop());
+                    System.out.println(queue.pop());
                     break;
                 case "front":
-                    out.println(queue.front());
+                    System.out.println(queue.front());
                     break;
                 case "SIZE":
-                    out.println(queue.size());
+                    System.out.println(queue.size());
                     break;
                 case "clear":
                     queue.clear();
-                    out.println("ok");
+                    System.out.println("ok");
                     break;
                 case "exit":
-                    out.println("bye");
+                    System.out.println("bye");
                     break endless;
                 default:
                     break;
             }
-            out.flush();
         }
     }
 
@@ -85,8 +80,6 @@ public class SimpleQueue {
 
     public static void main(final String[] arg) {
         final Scanner in = new Scanner(System.in);
-        try (PrintWriter out = new PrintWriter(System.out)) {
-            solve(in, out);
-        }
+        solve(in);
     }
 }
