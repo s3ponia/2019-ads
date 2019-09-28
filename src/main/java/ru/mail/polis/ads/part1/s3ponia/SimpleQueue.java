@@ -1,17 +1,24 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
-import java.io.PrintWriter;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 /**
- * https://www.e-olymp.com/ru/submissions/5736452
+ * https://www.e-olymp.com/ru/submissions/5737704
  */
-public class SimpleQueue {
-    private static void solve(final Scanner in) {
+public final class SimpleQueue {
+    private SimpleQueue() {
+    }
+
+    private static void solve(final FastScanner in) {
         final Queue queue = new Queue();
-        endless:
-        while (true) {
-            switch (in.next()) {
+        String query = "";
+        while (!"exit".equals(query)) {
+            query = in.next().trim();
+            switch (query) {
                 case "push":
                     queue.push(in.nextInt());
                     System.out.println("ok");
@@ -22,7 +29,7 @@ public class SimpleQueue {
                 case "front":
                     System.out.println(queue.front());
                     break;
-                case "SIZE":
+                case "size":
                     System.out.println(queue.size());
                     break;
                 case "clear":
@@ -31,10 +38,34 @@ public class SimpleQueue {
                     break;
                 case "exit":
                     System.out.println("bye");
-                    break endless;
+                    break;
                 default:
                     break;
             }
+        }
+    }
+
+    public static class FastScanner {
+        private final BufferedReader reader;
+        private StringTokenizer tokenizer;
+
+        FastScanner(final InputStream in) {
+            reader = new BufferedReader(new InputStreamReader(in));
+        }
+
+        String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return tokenizer.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
         }
     }
 
@@ -79,7 +110,7 @@ public class SimpleQueue {
     }
 
     public static void main(final String[] arg) {
-        final Scanner in = new Scanner(System.in);
+        final FastScanner in = new FastScanner(System.in);
         solve(in);
     }
 }

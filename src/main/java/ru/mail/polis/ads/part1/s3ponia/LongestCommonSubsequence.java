@@ -5,8 +5,11 @@ import java.util.Scanner;
 /**
  * https://www.e-olymp.com/ru/submissions/5736141
  */
-public class LongestCommonSubsequence {
-    private static int getSizeOfLongestSubsequence(int[] firstSequence, int[] secondSequence) {
+public final class LongestCommonSubsequence {
+    private LongestCommonSubsequence() {
+    }
+
+    private static int getSizeOfLongestSubsequence(final int[] firstSequence, final int[] secondSequence) {
 
         int[] prevLCS = new int[firstSequence.length + 1];
         int[] secondLCS = new int[firstSequence.length + 1];

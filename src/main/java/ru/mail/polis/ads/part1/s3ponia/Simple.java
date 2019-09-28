@@ -1,13 +1,15 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
-import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
  * https://www.e-olymp.com/ru/submissions/5712065
  */
-public class Simple {
-    private static String solve(int input) {
+public final class Simple {
+    private Simple() {
+    }
+
+    private static String solve(final int input) {
         return input / 10 + " " + input % 10;
     }
 

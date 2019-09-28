@@ -1,12 +1,14 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 /**
- * https://www.e-olymp.com/ru/submissions/5729482
+ * https://www.e-olymp.com/ru/submissions/5737606
  */
-public class BracketSequence {
+public final class BracketSequence {
+    private BracketSequence() {
+    }
+
     private static char getMatchCharByOpen(final char ch) {
         if (ch == '(') {
             return ')';
@@ -18,29 +20,30 @@ public class BracketSequence {
     }
 
     private static String getFixedBracket(final char bracket) {
-        if (bracket == ')' || bracket == '(')
+        if (bracket == ')' || bracket == '(') {
             return "()";
-        else
+        } else {
             return "[]";
+        }
     }
 
 
-    private static String print(final String input, final int b, final int e, final int[][] arrayRestore) {
+    private static String print(final int[][] arrayRestore, final String input, final int e, final int b) {
         if (b > e) {
             return "";
         }
         if (b == e) {
             return getFixedBracket(input.charAt(b));
         } else if (arrayRestore[b][e] == -1) {
-            return input.charAt(b) + print(input, b + 1, e - 1, arrayRestore) + input.charAt(e);
+            return input.charAt(b) + print(arrayRestore, input, e - 1, b + 1) + input.charAt(e);
         } else {
-            return print(input, b, arrayRestore[b][e], arrayRestore) +
-                    print(input, arrayRestore[b][e] + 1, e, arrayRestore);
+            return print(arrayRestore, input, arrayRestore[b][e], b)
+                    +
+                    print(arrayRestore, input, e, arrayRestore[b][e] + 1);
         }
     }
 
     private static String getFixedBracketSequence(final String input) {
-
         // arraySmallestCorrection[i][j] -
         // smallest size for part of the input from i to j
         int[][] arraySmallestCorrection = new int[input.length()][input.length()];
@@ -54,14 +57,17 @@ public class BracketSequence {
             for (int j = 0; j < arraySmallestCorrection[0].length; j++) {
                 arrayRestore[i][j] = -1;
                 arraySmallestCorrection[i][j] = -1;
+
                 if (i == j) {
                     arraySmallestCorrection[i][j] = 1;
                     continue;
                 }
+
                 if (i > j) {
                     arraySmallestCorrection[i][j] = 0;
                     continue;
                 }
+
                 if (getMatchCharByOpen(input.charAt(i)) == input.charAt(j)) {
                     arraySmallestCorrection[i][j] = arraySmallestCorrection[i + 1][j - 1];
                 }
@@ -75,15 +81,11 @@ public class BracketSequence {
             }
         }
 
-        return print(input, 0, input.length() - 1, arrayRestore);
+        return print(arrayRestore, input, input.length() - 1, 0);
     }
 
     public static void main(final String[] arg) {
         final Scanner in = new Scanner(System.in);
-        try {
-            System.out.println(getFixedBracketSequence(in.next()));
-        } catch (Exception exc) {
-            System.err.println(Arrays.toString(exc.getStackTrace()));
-        }
+        System.out.println(getFixedBracketSequence(in.nextLine()));
     }
 }
