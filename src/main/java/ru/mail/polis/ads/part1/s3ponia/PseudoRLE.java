@@ -1,11 +1,7 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
-import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.util.StringTokenizer;
+import java.util.Scanner;
 
 /**
  * https://www.e-olymp.com/ru/submissions/5735965
@@ -14,108 +10,86 @@ public class PseudoRLE {
     private PseudoRLE() {
     }
 
-    private static String repeatString(String string, int count) {
-        StringBuilder result = new StringBuilder();
+    private static String repeatString(String string, int quantity) {
+        final StringBuilder result = new StringBuilder();
 
-        while (count-- > 0)
+        while (quantity-- > 0) {
             result.append(string);
+        }
 
         return result.toString();
     }
 
-    private static void printSolution(String input, int b, int e, int[][] arrayRestore, PrintWriter out) {
+    private static String printSolution(final String input, final int b, final int e, final int[][] arrayRestore) {
         if (b > e) {
-            return;
+            return "";
         }
         if (arrayRestore[b][e] == 0) {
-            out.print(input.substring(b, e + 1));
-            return;
+            return input.substring(b, e + 1);
         }
         if (arrayRestore[b][e] < 0) {
-            int temp = -arrayRestore[b][e] - 1;
+            final int temp = -arrayRestore[b][e] - 1;
 
-            out.print((e - b + 1) / (temp - b + 1) + "(");
-            printSolution(input, b, temp, arrayRestore, out);
-            out.print(")");
+            return (e - b + 1) / (temp - b + 1) + "(" + printSolution(input, b, temp, arrayRestore) + ")";
         } else {
-            printSolution(input, b, arrayRestore[b][e] - 1, arrayRestore, out);
-            printSolution(input, arrayRestore[b][e], e, arrayRestore, out);
+            return printSolution(input, b, arrayRestore[b][e] - 1, arrayRestore) + printSolution(input, arrayRestore[b][e], e, arrayRestore);
         }
     }
 
-    private static void pseudoRLE(String input, PrintWriter out) {
-        int[][] arrayDinamic = new int[input.length()][input.length()];
-        int[][] arrayRestore = new int[input.length()][input.length()];
+    private static void solve(final Scanner in, final PrintWriter out) {
+        final String input=in.next();
 
-        for (int j = 0; j < arrayDinamic[0].length; j++) {
-            for (int i = arrayDinamic.length - 1; i >= 0; i--) {
-                arrayRestore[i][j] = 0;
-                arrayDinamic[i][j] = -1;
+        int size = input.length();
+        // arrayDinamic[i][j] - smallest size for part of the input from i to j
+        int[][] arraySmallestSizePartCanBe = new int[size][size];
+        // arrayRestoreValue[i][j] = 0 - part from i to j is without compression
+        // arrayRestoreValue[i][j] < 0 - repeat of part from i to |arrayRestoreValue[i][j]|-1
+        // arrayRestoreValue[i][j] > 0 - part from i to arrayRestoreValue[i][j]-1 and from arrayRestoreValue[i][j] to j are compressed
+        int[][] arrayRestoreValue = new int[size][size];
+
+        // searching size of compressed input
+        for (int j = 0; j < arraySmallestSizePartCanBe[0].length; j++) {
+            for (int i = arraySmallestSizePartCanBe.length - 1; i >= 0; i--) {
+                arrayRestoreValue[i][j] = 0;
+                // -1 equals infinity
+                arraySmallestSizePartCanBe[i][j] = -1;
+
                 if (j < i) {
-                    arrayDinamic[i][j] = 0;
+                    arraySmallestSizePartCanBe[i][j] = 0;
                     continue;
                 }
+
                 if (i == j) {
-                    arrayDinamic[i][j] = 1;
+                    arraySmallestSizePartCanBe[i][j] = 1;
                     continue;
                 }
 
-                int temp = 0;
+                int temp;
                 for (int k = i; k < j; k++) {
-                    if ((j - k) % (k - i + 1) == 0) {
-                        final int eqCount = (j - k) / (k - i + 1);
-                        String tempString = repeatString(input.substring(i, k + 1), eqCount);
-                        if (tempString.equals(input.substring(k + 1, j + 1))) {
-                            temp = arrayDinamic[i][k] + 2 + Integer.toString(eqCount + 1).length();
-                            if (arrayDinamic[i][j] == -1 || temp < arrayDinamic[i][j]) {
-                                arrayDinamic[i][j] = temp;
-                                arrayRestore[i][j] = -(k + 1);
-                            }
+                    final int eqCount = (j - k) / (k - i + 1);
+                    if ((j - k) % (k - i + 1) == 0 && repeatString(input.substring(i, k + 1), eqCount).equals(input.substring(k + 1, j + 1))) {
+                        temp = arraySmallestSizePartCanBe[i][k] + 2 + Integer.toString(eqCount + 1).length();
+                        if (arraySmallestSizePartCanBe[i][j] == -1 || temp < arraySmallestSizePartCanBe[i][j]) {
+                            arraySmallestSizePartCanBe[i][j] = temp;
+                            arrayRestoreValue[i][j] = -(k + 1);
                         }
+
                     }
 
-                    temp = arrayDinamic[i][k] + arrayDinamic[k + 1][j];
-                    if (arrayDinamic[i][j] == -1 || temp < arrayDinamic[i][j]) {
-                        arrayDinamic[i][j] = temp;
-                        arrayRestore[i][j] = k + 1;
+                    temp = arraySmallestSizePartCanBe[i][k] + arraySmallestSizePartCanBe[k + 1][j];
+                    if (arraySmallestSizePartCanBe[i][j] == -1 || temp < arraySmallestSizePartCanBe[i][j]) {
+                        arraySmallestSizePartCanBe[i][j] = temp;
+                        arrayRestoreValue[i][j] = k + 1;
                     }
                 }
             }
         }
 
-        printSolution(input, 0, input.length() - 1, arrayRestore, out);
-    }
-
-    private static void solve(final FastScanner in, final PrintWriter out) {
-        pseudoRLE(in.next(), out);
-    }
-
-    private static class FastScanner {
-        private final BufferedReader reader;
-        private StringTokenizer tokenizer;
-
-        FastScanner(final InputStream in) {
-            reader = new BufferedReader(new InputStreamReader(in));
-        }
-
-        String next() {
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return tokenizer.nextToken();
-        }
-
-        int nextInt() {
-            return Integer.parseInt(next());
-        }
+        out.println(printSolution(input, 0, input.length() - 1, arrayRestoreValue));
     }
 
     public static void main(final String[] arg) {
-        final FastScanner in = new FastScanner(System.in);
+        final Scanner in = new Scanner(System.in);
         try (PrintWriter out = new PrintWriter(System.out)) {
             solve(in, out);
         }

@@ -1,11 +1,7 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
-import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.util.StringTokenizer;
+import java.util.Scanner;
 
 /**
  * https://www.e-olymp.com/ru/submissions/5736452
@@ -15,8 +11,8 @@ public class SimpleQueue {
     private SimpleQueue() {
     }
 
-    private static void solve(final FastScanner in, final PrintWriter out) {
-        Queue queue = new Queue();
+    private static void solve(final Scanner in, final PrintWriter out) {
+        final Queue queue = new Queue();
         endless:
         while (true) {
             switch (in.next()) {
@@ -30,7 +26,7 @@ public class SimpleQueue {
                 case "front":
                     out.println(queue.front());
                     break;
-                case "size":
+                case "SIZE":
                     out.println(queue.size());
                     break;
                 case "clear":
@@ -40,31 +36,33 @@ public class SimpleQueue {
                 case "exit":
                     out.println("bye");
                     break endless;
+                default:
+                    break;
             }
             out.flush();
         }
     }
 
     private static class Queue {
-        private static final int size = 101;
+        private static final int SIZE = 101;
         private int free;
         private int begin;
-        private int[] queue;
+        private int[] data;
 
         Queue() {
             free = 0;
             begin = 0;
-            queue = new int[size];
+            data = new int[SIZE];
         }
 
-        public void push(int el) {
-            queue[free] = el;
-            free = (free + 1) % size;
+        public void push(final int el) {
+            data[free] = el;
+            free = (free + 1) % SIZE;
         }
 
         public int size() {
             if (free < begin) {
-                return free + size - begin;
+                return free + SIZE - begin;
             } else {
                 return free - begin;
             }
@@ -75,45 +73,18 @@ public class SimpleQueue {
         }
 
         public int front() {
-            return queue[begin];
+            return data[begin];
         }
 
         public int pop() {
-            int prevBegin = begin;
-            begin = (begin + 1) % size;
-            return queue[prevBegin];
-        }
-
-        private void realloc() {
-        }
-    }
-
-    private static class FastScanner {
-        private final BufferedReader reader;
-        private StringTokenizer tokenizer;
-
-        FastScanner(final InputStream in) {
-            reader = new BufferedReader(new InputStreamReader(in));
-        }
-
-        String next() {
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return tokenizer.nextToken();
-        }
-
-        int nextInt() {
-            return Integer.parseInt(next());
+            final int prevBegin = begin;
+            begin = (begin + 1) % SIZE;
+            return data[prevBegin];
         }
     }
 
     public static void main(final String[] arg) {
-        final FastScanner in = new FastScanner(System.in);
+        final Scanner in = new Scanner(System.in);
         try (PrintWriter out = new PrintWriter(System.out)) {
             solve(in, out);
         }
