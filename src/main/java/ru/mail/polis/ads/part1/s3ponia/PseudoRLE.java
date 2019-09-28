@@ -1,5 +1,6 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
@@ -9,10 +10,11 @@ public final class PseudoRLE {
     private PseudoRLE() {
     }
 
-    private static String repeatString(final String inputString, int numberOfRepeatsOfThisStringThatPassAsArgument) {
+    private static String repeatString(final String inputString, final int quantity) {
         final StringBuilder result = new StringBuilder();
+        int quantityCopyForReAssigning = quantity;
 
-        while (numberOfRepeatsOfThisStringThatPassAsArgument-- > 0) {
+        while (quantityCopyForReAssigning-- > 0) {
             result.append(inputString);
         }
 
@@ -95,6 +97,7 @@ public final class PseudoRLE {
 
     public static void main(final String[] arg) {
         final Scanner in = new Scanner(System.in);
-        System.out.println(getCompressedString(in.next()));
+        final PrintWriter out = new PrintWriter(System.out);
+        out.println(getCompressedString(in.next()));
     }
 }

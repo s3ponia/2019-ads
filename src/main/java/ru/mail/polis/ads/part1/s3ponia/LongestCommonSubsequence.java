@@ -1,5 +1,6 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
@@ -21,8 +22,7 @@ public final class LongestCommonSubsequence {
                     secondLCS[i] = Math.max(prevLCS[i], secondLCS[i - 1]);
                 }
             }
-            prevLCS = secondLCS;
-            secondLCS = new int[secondLCS.length];
+            prevLCS = secondLCS.clone();
         }
 
         return prevLCS[prevLCS.length - 1];
@@ -30,6 +30,8 @@ public final class LongestCommonSubsequence {
 
     public static void main(final String[] arg) {
         final Scanner in = new Scanner(System.in);
+        final PrintWriter out = new PrintWriter(System.out);
+
         int[] firstSequence = new int[in.nextInt()];
         for (int i = 0; i < firstSequence.length; i++) {
             firstSequence[i] = in.nextInt();
@@ -40,6 +42,6 @@ public final class LongestCommonSubsequence {
             secondSequence[i] = in.nextInt();
         }
 
-        System.out.println(getSizeOfLongestSubsequence(firstSequence, secondSequence));
+        out.println(getSizeOfLongestSubsequence(firstSequence, secondSequence));
     }
 }

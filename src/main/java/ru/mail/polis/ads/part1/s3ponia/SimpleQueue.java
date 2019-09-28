@@ -1,9 +1,10 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.IOException;
 import java.util.StringTokenizer;
 
 /**
@@ -13,7 +14,7 @@ public final class SimpleQueue {
     private SimpleQueue() {
     }
 
-    private static void solve(final FastScanner in) {
+    private static void solve(final VeryFastScanner in, final PrintWriter out) {
         final Queue queue = new Queue();
         String query = "";
         while (!"exit".equals(query)) {
@@ -21,23 +22,23 @@ public final class SimpleQueue {
             switch (query) {
                 case "push":
                     queue.push(in.nextInt());
-                    System.out.println("ok");
+                    out.println("ok");
                     break;
                 case "pop":
-                    System.out.println(queue.pop());
+                    out.println(queue.pop());
                     break;
                 case "front":
-                    System.out.println(queue.front());
+                    out.println(queue.front());
                     break;
                 case "size":
-                    System.out.println(queue.size());
+                    out.println(queue.size());
                     break;
                 case "clear":
                     queue.clear();
-                    System.out.println("ok");
+                    out.println("ok");
                     break;
                 case "exit":
-                    System.out.println("bye");
+                    out.println("bye");
                     break;
                 default:
                     break;
@@ -45,11 +46,11 @@ public final class SimpleQueue {
         }
     }
 
-    public static class FastScanner {
+    public static class VeryFastScanner {
         private final BufferedReader reader;
         private StringTokenizer tokenizer;
 
-        FastScanner(final InputStream in) {
+        VeryFastScanner(final InputStream in) {
             reader = new BufferedReader(new InputStreamReader(in));
         }
 
@@ -110,7 +111,8 @@ public final class SimpleQueue {
     }
 
     public static void main(final String[] arg) {
-        final FastScanner in = new FastScanner(System.in);
-        solve(in);
+        final VeryFastScanner in = new VeryFastScanner(System.in);
+        final PrintWriter out = new PrintWriter(System.out);
+        solve(in, out);
     }
 }
