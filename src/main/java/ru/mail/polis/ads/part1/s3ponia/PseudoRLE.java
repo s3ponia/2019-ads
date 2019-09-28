@@ -1,42 +1,67 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
 import java.io.PrintWriter;
-import java.util.Scanner;
+import java.util.*;
 
-/**
- * https://www.e-olymp.com/ru/submissions/5735965
- */
 public final class PseudoRLE {
     private PseudoRLE() {
     }
 
-    private static String repeatString(final String inputString, final int quantity) {
-        final StringBuilder result = new StringBuilder();
-        int quantityCopyForReAssigning = quantity;
+    private static boolean checkForRepeats(final String input, final int b, final int m, final int e) {
+        int iterator2 = m + 1;
+        int iterator1 = b;
+        int size = m - b + 1;
+        while (iterator2 <= e && input.charAt(iterator1) == input.charAt(iterator2)) {
+            ++iterator2;
+            iterator1 = (iterator1 - b + 1) % size + b;
+        }
+        return iterator2 > e;
+    }
 
-        while (quantityCopyForReAssigning-- > 0) {
-            result.append(inputString);
+    private static String printSolution(final String input, final int[][] arrayRestore) {
+        class Pair {
+            int begin;
+            int end;
+            int closeBracketsCount = 0;
+
+            Pair(int b, int e) {
+                this.begin = b;
+                this.end = e;
+            }
+
+            Pair(int b, int e, int count) {
+                this.begin = b;
+                this.end = e;
+                this.closeBracketsCount = count;
+            }
+        }
+
+        Stack<Pair> stack = new Stack<>();
+        stack.add(new Pair(0, input.length()-1));
+
+        StringBuilder result = new StringBuilder();
+
+        while (!stack.isEmpty()) {
+            Pair temp = stack.pop();
+            if (arrayRestore[temp.begin][temp.end] == 0) {
+                result.append(input, temp.begin, temp.end + 1);
+                while (temp.closeBracketsCount > 0) {
+                    --temp.closeBracketsCount;
+                    result.append(")");
+                }
+                continue;
+            }
+            if (arrayRestore[temp.begin][temp.end] < 0) {
+                final int tempInt = -arrayRestore[temp.begin][temp.end] - 1;
+                result.append((temp.end - temp.begin + 1) / (tempInt - temp.begin + 1)).append("(");
+                stack.push(new Pair(temp.begin, tempInt, 1 + temp.closeBracketsCount));
+            } else {
+                stack.push(new Pair(arrayRestore[temp.begin][temp.end], temp.end, temp.closeBracketsCount));
+                stack.push(new Pair(temp.begin, arrayRestore[temp.begin][temp.end] - 1));
+            }
         }
 
         return result.toString();
-    }
-
-    private static String printSolution(final String input, final int[][] arrayRestore, final int e, final int b) {
-        if (b > e) {
-            return "";
-        }
-        if (arrayRestore[b][e] == 0) {
-            return input.substring(b, e + 1);
-        }
-        if (arrayRestore[b][e] < 0) {
-            final int temp = -arrayRestore[b][e] - 1;
-
-            return (e - b + 1) / (temp - b + 1) + "(" + printSolution(input, arrayRestore, temp, b) + ")";
-        } else {
-            return printSolution(input, arrayRestore, arrayRestore[b][e] - 1, b)
-                    +
-                    printSolution(input, arrayRestore, e, arrayRestore[b][e]);
-        }
     }
 
     private static String getCompressedString(final String input) {
@@ -52,9 +77,12 @@ public final class PseudoRLE {
         // part from i to arrayRestoreValue[i][j]-1 and from arrayRestoreValue[i][j] to j are compressed
         int[][] arrayRestoreValue = new int[size][size];
 
+        // utility variables
+        int temp;
+        int eqCount;
         // searching size of compressed input
         for (int j = 0; j < arraySmallestSizePartCanBe[0].length; j++) {
-            for (int i = arraySmallestSizePartCanBe.length - 1; i >= 0; i--) {
+            for (int i = j; i >= 0; i--) {
                 arrayRestoreValue[i][j] = 0;
                 // -1 equals infinity
                 arraySmallestSizePartCanBe[i][j] = -1;
@@ -69,14 +97,14 @@ public final class PseudoRLE {
                     continue;
                 }
 
-                int temp;
                 for (int k = i; k < j; k++) {
-                    final int eqCount = (j - k) / (k - i + 1);
-                    temp = arraySmallestSizePartCanBe[i][k] + 2 + Integer.toString(eqCount + 1).length();
                     if ((j - k) % (k - i + 1) == 0
-                            && repeatString(input.substring(i, k + 1), eqCount).equals(input.substring(k + 1, j + 1))
+                            && checkForRepeats(input, i, k, j)
                             && (arraySmallestSizePartCanBe[i][j] == -1
-                            || temp < arraySmallestSizePartCanBe[i][j]
+                            | (temp = arraySmallestSizePartCanBe[i][k]
+                            + 2
+                            + Integer.toString((j - k) / (k - i + 1) + 1).length())
+                            < arraySmallestSizePartCanBe[i][j]
                     )
                     ) {
                         arraySmallestSizePartCanBe[i][j] = temp;
@@ -92,12 +120,13 @@ public final class PseudoRLE {
             }
         }
 
-        return printSolution(input, arrayRestoreValue, input.length() - 1, 0);
+        return printSolution(input, arrayRestoreValue);
     }
 
     public static void main(final String[] arg) {
         final Scanner in = new Scanner(System.in);
         final PrintWriter out = new PrintWriter(System.out);
         out.println(getCompressedString(in.next()));
+        out.flush();
     }
 }
