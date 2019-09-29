@@ -44,6 +44,35 @@ public final class BracketSequence {
         }
     }
 
+    private static class Pair {
+        private final int first;
+        private final int second;
+
+        private Pair(int first, int second) {
+            this.first = first;
+            this.second = second;
+        }
+
+        public static Pair valueOf(final int first, final int second) {
+            return new Pair(first, second);
+        }
+    }
+
+    private static Pair getSmallestCorrectionForPart(final int[][] arraySmallestCorrection, final int i, final int j) {
+        int restore = -1;
+        int minCorrection = arraySmallestCorrection[i][j];
+
+        for (int k = i; k < j; k++) {
+            final int temp = arraySmallestCorrection[i][k] + arraySmallestCorrection[k + 1][j];
+            if (minCorrection == -1 || temp < minCorrection) {
+                minCorrection = temp;
+                restore = k;
+            }
+        }
+
+        return Pair.valueOf(minCorrection, restore);
+    }
+
     private static String getFixedBracketSequence(final String input) {
         // arraySmallestCorrection[i][j] -
         // smallest size for part of the input from i to j
@@ -55,7 +84,7 @@ public final class BracketSequence {
         int[][] arrayRestore = new int[input.length()][input.length()];
 
         for (int i = arraySmallestCorrection.length - 1; i >= 0; i--) {
-            for (int j = 0; j < arraySmallestCorrection[0].length; j++) {
+            for (int j = i; j < arraySmallestCorrection[0].length; j++) {
                 arrayRestore[i][j] = -1;
                 arraySmallestCorrection[i][j] = -1;
 
@@ -64,21 +93,13 @@ public final class BracketSequence {
                     continue;
                 }
 
-                if (i > j) {
-                    arraySmallestCorrection[i][j] = 0;
-                    continue;
-                }
-
                 if (getMatchCharByOpen(input.charAt(i)) == input.charAt(j)) {
                     arraySmallestCorrection[i][j] = arraySmallestCorrection[i + 1][j - 1];
                 }
-                for (int k = i; k < j; k++) {
-                    final int temp = arraySmallestCorrection[i][k] + arraySmallestCorrection[k + 1][j];
-                    if (arraySmallestCorrection[i][j] == -1 || temp < arraySmallestCorrection[i][j]) {
-                        arraySmallestCorrection[i][j] = temp;
-                        arrayRestore[i][j] = k;
-                    }
-                }
+
+                Pair pairSolution = getSmallestCorrectionForPart(arraySmallestCorrection, i, j);
+                arraySmallestCorrection[i][j] = pairSolution.first;
+                arrayRestore[i][j] = pairSolution.second;
             }
         }
 
@@ -90,5 +111,6 @@ public final class BracketSequence {
         final PrintWriter out = new PrintWriter(System.out);
 
         out.println(getFixedBracketSequence(in.nextLine()));
+        out.flush();
     }
 }

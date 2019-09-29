@@ -17,7 +17,7 @@ public final class SimpleQueue {
         String query = "";
         while (!"exit".equals(query)) {
             query = in.readLine().trim();
-            String[] queryParts=query.split(" ");
+            final String[] queryParts=query.split(" ");
             switch (queryParts[0]) {
                 case "push":
                     queue.push(Integer.parseInt(queryParts[1]));
