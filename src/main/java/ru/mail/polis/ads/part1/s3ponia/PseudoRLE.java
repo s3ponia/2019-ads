@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Scanner;
 
+
 /**
  * https://www.e-olymp.com/ru/submissions/5738196
  */
