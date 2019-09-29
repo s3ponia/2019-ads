@@ -1,6 +1,5 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
-import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
@@ -108,9 +107,6 @@ public final class BracketSequence {
 
     public static void main(final String[] arg) {
         final Scanner in = new Scanner(System.in);
-        final PrintWriter out = new PrintWriter(System.out);
-
-        out.println(getFixedBracketSequence(in.nextLine()));
-        out.flush();
+        System.out.println(getFixedBracketSequence(in.nextLine()));
     }
 }
