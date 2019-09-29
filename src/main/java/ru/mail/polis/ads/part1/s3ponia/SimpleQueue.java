@@ -1,8 +1,9 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.IOException;
 
 /**
  * https://www.e-olymp.com/ru/submissions/5742516
@@ -11,7 +12,7 @@ public final class SimpleQueue {
     private SimpleQueue() {
     }
 
-    private static void solve(final BufferedReader in) throws IOException {
+    private static void solve(final BufferedReader in, final PrintWriter out) throws IOException {
         final Queue queue = new Queue();
         String query = "";
         while (!"exit".equals(query)) {
@@ -20,23 +21,23 @@ public final class SimpleQueue {
             switch (queryParts[0]) {
                 case "push":
                     queue.push(Integer.parseInt(queryParts[1]));
-                    System.out.println("ok");
+                    out.println("ok");
                     break;
                 case "pop":
-                    System.out.println(queue.pop());
+                    out.println(queue.pop());
                     break;
                 case "front":
-                    System.out.println(queue.front());
+                    out.println(queue.front());
                     break;
                 case "size":
-                    System.out.println(queue.size());
+                    out.println(queue.size());
                     break;
                 case "clear":
                     queue.clear();
-                    System.out.println("ok");
+                    out.println("ok");
                     break;
                 case "exit":
-                    System.out.println("bye");
+                    out.println("bye");
                     break;
                 default:
                     break;
@@ -86,6 +87,8 @@ public final class SimpleQueue {
 
     public static void main(final String[] arg) throws IOException {
         final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        solve(in);
+        final PrintWriter out = new PrintWriter(System.out);
+        solve(in, out);
+        out.flush();
     }
 }

@@ -1,5 +1,6 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
@@ -15,7 +16,9 @@ public final class Simple {
 
     public static void main(final String[] arg) {
         final Scanner in = new Scanner(System.in);
+        final PrintWriter out = new PrintWriter(System.out);
 
-        System.out.println(solve(in.nextInt()));
+        out.println(solve(in.nextInt()));
+        out.flush();
     }
 }
