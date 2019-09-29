@@ -7,7 +7,6 @@ import java.util.Scanner;
  * https://www.e-olymp.com/ru/submissions/5737606
  */
 public final class BracketSequence {
-    
     private BracketSequence() {
     }
 
