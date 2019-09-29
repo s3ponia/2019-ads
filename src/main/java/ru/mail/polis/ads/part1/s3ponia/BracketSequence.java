@@ -48,7 +48,7 @@ public final class BracketSequence {
         private final int first;
         private final int second;
 
-        private Pair(int first, int second) {
+        private Pair(final int first, final int second) {
             this.first = first;
             this.second = second;
         }
@@ -97,7 +97,7 @@ public final class BracketSequence {
                     arraySmallestCorrection[i][j] = arraySmallestCorrection[i + 1][j - 1];
                 }
 
-                Pair pairSolution = getSmallestCorrectionForPart(arraySmallestCorrection, i, j);
+                final Pair pairSolution = getSmallestCorrectionForPart(arraySmallestCorrection, i, j);
                 arraySmallestCorrection[i][j] = pairSolution.first;
                 arrayRestore[i][j] = pairSolution.second;
             }

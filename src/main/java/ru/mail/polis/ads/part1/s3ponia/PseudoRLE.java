@@ -66,7 +66,9 @@ public final class PseudoRLE {
                 result.append((temp.second - temp.first + 1) / (tempInt - temp.first + 1)).append('(');
                 stack.push(BracketsPair.valueOf(temp.first, tempInt, 1 + temp.additionalVariable));
             } else {
-                stack.push(BracketsPair.valueOf(arrayRestore[temp.first][temp.second], temp.second, temp.additionalVariable));
+                stack.push(BracketsPair.valueOf(arrayRestore[temp.first][temp.second],
+                        temp.second, temp.additionalVariable)
+                );
                 stack.push(BracketsPair.valueOf(temp.first, arrayRestore[temp.first][temp.second] - 1));
             }
         }
@@ -74,7 +76,9 @@ public final class PseudoRLE {
         return result.toString();
     }
 
-    private static BracketsPair getSmallestSizeOfPart(final int[][] arraySmallestSizePartCanBe, final String inputString, final int i, final int j) {
+    private static BracketsPair getSmallestSizeOfPart(final int[][] arraySmallestSizePartCanBe,
+                                                      final String inputString,
+                                                      final int i, final int j) {
         int minSize = arraySmallestSizePartCanBe[i][j];
         int restore = 0;
 
@@ -113,8 +117,6 @@ public final class PseudoRLE {
         // arrayRestoreValue[i][j] > 0 -
         // part from i to arrayRestoreValue[i][j]-1 and from arrayRestoreValue[i][j] to j are compressed
         final int[][] arrayRestoreValue = new int[size][size];
-        // utility variables
-        int temp;
         // searching size of compressed input
         for (int j = 0; j < arraySmallestSizePartCanBe[0].length; j++) {
             for (int i = j; i >= 0; i--) {
@@ -127,7 +129,9 @@ public final class PseudoRLE {
                     continue;
                 }
 
-                BracketsPair bracketsPairSolution = getSmallestSizeOfPart(arraySmallestSizePartCanBe, inputString, i, j);
+                final BracketsPair bracketsPairSolution =
+                        getSmallestSizeOfPart(arraySmallestSizePartCanBe,
+                                inputString, i, j);
                 arraySmallestSizePartCanBe[i][j] = bracketsPairSolution.first;
                 arrayRestoreValue[i][j] = bracketsPairSolution.second;
             }
