@@ -1,7 +1,8 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.Scanner;
+import java.util.Stack;
 
 public final class PseudoRLE {
     private PseudoRLE() {
@@ -18,68 +19,76 @@ public final class PseudoRLE {
         return iterator2 > e;
     }
 
-    private static String printSolution(final String input, final int[][] arrayRestore) {
-        class Pair {
-            int begin;
-            int end;
-            int closeBracketsCount = 0;
+    static class BracketsPair {
+        private final int begin;
+        private final int end;
+        private int closeBracketsCount;
 
-            Pair(int b, int e) {
-                this.begin = b;
-                this.end = e;
-            }
-
-            Pair(int b, int e, int count) {
-                this.begin = b;
-                this.end = e;
-                this.closeBracketsCount = count;
-            }
+        private BracketsPair(final int b, final int e) {
+            this.begin = b;
+            this.end = e;
         }
 
-        Stack<Pair> stack = new Stack<>();
-        stack.add(new Pair(0, input.length()-1));
+        private BracketsPair(final int b, final int e, final int count) {
+            this.begin = b;
+            this.end = e;
+            this.closeBracketsCount = count;
+        }
 
-        StringBuilder result = new StringBuilder();
+        public static BracketsPair valueOf(final int b, final int e, final int count) {
+            return new BracketsPair(b, e, count);
+        }
+
+        public static BracketsPair valueOf(final int b, final int e) {
+            return new BracketsPair(b, e);
+        }
+    }
+
+    private static String printSolution(final int[][] arrayRestore, final String input) {
+
+
+        final Stack<BracketsPair> stack = new Stack<>();
+        stack.add(new BracketsPair(0, input.length() - 1));
+
+        final StringBuilder result = new StringBuilder();
 
         while (!stack.isEmpty()) {
-            Pair temp = stack.pop();
+            final BracketsPair temp = stack.pop();
             if (arrayRestore[temp.begin][temp.end] == 0) {
                 result.append(input, temp.begin, temp.end + 1);
                 while (temp.closeBracketsCount > 0) {
                     --temp.closeBracketsCount;
-                    result.append(")");
+                    result.append(')');
                 }
                 continue;
             }
             if (arrayRestore[temp.begin][temp.end] < 0) {
                 final int tempInt = -arrayRestore[temp.begin][temp.end] - 1;
-                result.append((temp.end - temp.begin + 1) / (tempInt - temp.begin + 1)).append("(");
-                stack.push(new Pair(temp.begin, tempInt, 1 + temp.closeBracketsCount));
+                result.append((temp.end - temp.begin + 1) / (tempInt - temp.begin + 1)).append('(');
+                stack.push(BracketsPair.valueOf(temp.begin, tempInt, 1 + temp.closeBracketsCount));
             } else {
-                stack.push(new Pair(arrayRestore[temp.begin][temp.end], temp.end, temp.closeBracketsCount));
-                stack.push(new Pair(temp.begin, arrayRestore[temp.begin][temp.end] - 1));
+                stack.push(BracketsPair.valueOf(arrayRestore[temp.begin][temp.end], temp.end, temp.closeBracketsCount));
+                stack.push(BracketsPair.valueOf(temp.begin, arrayRestore[temp.begin][temp.end] - 1));
             }
         }
 
         return result.toString();
     }
 
-    private static String getCompressedString(final String input) {
-        final int size = input.length();
+    private static int[][] compileArrayForSolution(final String inputString) {
+        final int size = inputString.length();
         // arrayDinamic[i][j] -
         // smallest size for part of the input from i to j
-        int[][] arraySmallestSizePartCanBe = new int[size][size];
+        final int[][] arraySmallestSizePartCanBe = new int[size][size];
         // arrayRestoreValue[i][j] = 0 -
         // part from i to j is without compression
         // arrayRestoreValue[i][j] < 0 -
         // repeat of part from i to |arrayRestoreValue[i][j]|-1
         // arrayRestoreValue[i][j] > 0 -
         // part from i to arrayRestoreValue[i][j]-1 and from arrayRestoreValue[i][j] to j are compressed
-        int[][] arrayRestoreValue = new int[size][size];
-
+        final int[][] arrayRestoreValue = new int[size][size];
         // utility variables
         int temp;
-        int eqCount;
         // searching size of compressed input
         for (int j = 0; j < arraySmallestSizePartCanBe[0].length; j++) {
             for (int i = j; i >= 0; i--) {
@@ -87,25 +96,18 @@ public final class PseudoRLE {
                 // -1 equals infinity
                 arraySmallestSizePartCanBe[i][j] = -1;
 
-                if (j < i) {
-                    arraySmallestSizePartCanBe[i][j] = 0;
-                    continue;
-                }
-
                 if (i == j) {
                     arraySmallestSizePartCanBe[i][j] = 1;
                     continue;
                 }
 
                 for (int k = i; k < j; k++) {
+                    temp = arraySmallestSizePartCanBe[i][k]
+                            + 2 + Integer.toString((j - k) / (k - i + 1) + 1).length();
                     if ((j - k) % (k - i + 1) == 0
-                            && checkForRepeats(input, i, k, j)
+                            && checkForRepeats(inputString, i, k, j)
                             && (arraySmallestSizePartCanBe[i][j] == -1
-                            | (temp = arraySmallestSizePartCanBe[i][k]
-                            + 2
-                            + Integer.toString((j - k) / (k - i + 1) + 1).length())
-                            < arraySmallestSizePartCanBe[i][j]
-                    )
+                            || temp < arraySmallestSizePartCanBe[i][j])
                     ) {
                         arraySmallestSizePartCanBe[i][j] = temp;
                         arrayRestoreValue[i][j] = -(k + 1);
@@ -120,7 +122,13 @@ public final class PseudoRLE {
             }
         }
 
-        return printSolution(input, arrayRestoreValue);
+        return arrayRestoreValue;
+    }
+
+    private static String getCompressedString(final String input) {
+        int[][] arrayRestoreValue = compileArrayForSolution(input);
+
+        return printSolution(arrayRestoreValue, input);
     }
 
     public static void main(final String[] arg) {

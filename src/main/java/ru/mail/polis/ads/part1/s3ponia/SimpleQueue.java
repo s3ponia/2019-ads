@@ -1,27 +1,26 @@
 package ru.mail.polis.ads.part1.s3ponia;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.IOException;
-import java.util.StringTokenizer;
 
 /**
- * https://www.e-olymp.com/ru/submissions/5737704
+ * https://www.e-olymp.com/ru/submissions/5742516
  */
 public final class SimpleQueue {
     private SimpleQueue() {
     }
 
-    private static void solve(final VeryFastScanner in, final PrintWriter out) {
+    private static void solve(final BufferedReader in, final PrintWriter out) throws IOException {
         final Queue queue = new Queue();
         String query = "";
         while (!"exit".equals(query)) {
-            query = in.next().trim();
-            switch (query) {
+            query = in.readLine().trim();
+            String[] queryParts=query.split(" ");
+            switch (queryParts[0]) {
                 case "push":
-                    queue.push(in.nextInt());
+                    queue.push(Integer.parseInt(queryParts[1]));
                     out.println("ok");
                     break;
                 case "pop":
@@ -43,30 +42,6 @@ public final class SimpleQueue {
                 default:
                     break;
             }
-        }
-    }
-
-    public static class VeryFastScanner {
-        private final BufferedReader reader;
-        private StringTokenizer tokenizer;
-
-        VeryFastScanner(final InputStream in) {
-            reader = new BufferedReader(new InputStreamReader(in));
-        }
-
-        String next() {
-            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
-                try {
-                    tokenizer = new StringTokenizer(reader.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return tokenizer.nextToken();
-        }
-
-        int nextInt() {
-            return Integer.parseInt(next());
         }
     }
 
@@ -110,9 +85,10 @@ public final class SimpleQueue {
         }
     }
 
-    public static void main(final String[] arg) {
-        final VeryFastScanner in = new VeryFastScanner(System.in);
+    public static void main(final String[] arg) throws IOException {
+        final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         final PrintWriter out = new PrintWriter(System.out);
         solve(in, out);
+        out.flush();
     }
 }

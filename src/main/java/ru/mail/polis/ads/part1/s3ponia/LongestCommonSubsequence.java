@@ -10,8 +10,7 @@ public final class LongestCommonSubsequence {
     private LongestCommonSubsequence() {
     }
 
-    private static int getSizeOfLongestSubsequence(final int[] firstSequence, final int[] secondSequence) {
-
+    private static int getSizeOfLongestSubsequence(final int[] firstSequence, final int... secondSequence) {
         int[] prevLCS = new int[firstSequence.length + 1];
         int[] secondLCS = new int[firstSequence.length + 1];
         for (int j = 1; j <= secondSequence.length; j++) {
