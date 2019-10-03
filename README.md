@@ -48,10 +48,20 @@ $ git checkout -b part1
 
 ## ДЗ 1.
 Задачи с e-olymp.com
-  * https://www.e-olymp.com/ru/problems/1 (проверим систему)
-  * https://www.e-olymp.com/ru/problems/1087
-  * https://www.e-olymp.com/ru/problems/1090
-  * https://www.e-olymp.com/ru/problems/1618
-  * https://www.e-olymp.com/ru/problems/6125
+  * https://www.e-olymp.com/ru/problems/1 - проверим систему
+  * https://www.e-olymp.com/ru/problems/1087 - динамика
+  * https://www.e-olymp.com/ru/problems/1090 - динамика
+  * https://www.e-olymp.com/ru/problems/1618 - динамика
+  * https://www.e-olymp.com/ru/problems/6125 - очередь
 
 За каждое полностью рабочее решение дается 2 балла (да, даже за первую задачу).  
+
+## ДЗ 2.
+Задачи с e-olymp.com
+  * https://www.e-olymp.com/ru/problems/15 - динамика
+  * https://www.e-olymp.com/ru/problems/262 - динамику
+  * https://www.e-olymp.com/ru/problems/3837 - стек/очередь
+  * https://www.e-olymp.com/ru/problems/5327 - скобочки со стеком
+  * https://www.e-olymp.com/ru/problems/6124 - стек
+
+За каждое полностью рабочее решение дается 2 балла.  
