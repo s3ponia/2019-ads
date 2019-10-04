@@ -1,5 +1,5 @@
 # Алгоритмы и структуры данных
-Задаи для курса "Алгоритмы и структуры данных" 2019 года
+Задачи для курса "Алгоритмы и структуры данных" 2019 года
 [курса](https://polis.mail.ru/curriculum/program/discipline/836/) в [Технополис](https://polis.mail.ru).
 
 ## Fork
@@ -15,13 +15,13 @@ From github.com:polis-mail-ru/2019-ads
 ```
 
 ## Схема работы
-В общем случае часть задач будет с [e-olymp](https://www.e-olymp.com), и проверяться средствами этой системы.
-Но также возможны и задачи, тесты на которые будут оформлены и нашем репозитории.
+В общем случае часть задач будет с [e-olymp](https://www.e-olymp.com), и проверяться будет средствами этой системы.
+Но также возможны и задачи, тесты на которые будут оформлены в нашем репозитории.
 
 ### Решения задач с e-olymp.com
-Первым делом регистрируеся на [e-olymp](https://www.e-olymp.com).
+Первым делом регистрируемся на [e-olymp](https://www.e-olymp.com).
 
-Для каждого нового домашеного задания заводим новую ветку в своем репозитории.
+Для каждого нового домашнего задания заводим новую ветку в своем репозитории.
 Например, домашнему заданию после первой лекции будет соответствовать ветка `part1`.
 Создаем ее в локальном репозитории
 ```
@@ -48,10 +48,20 @@ $ git checkout -b part1
 
 ## ДЗ 1.
 Задачи с e-olymp.com
-  * https://www.e-olymp.com/ru/problems/1 (проверим систему)
-  * https://www.e-olymp.com/ru/problems/1087
-  * https://www.e-olymp.com/ru/problems/1090
-  * https://www.e-olymp.com/ru/problems/1618
-  * https://www.e-olymp.com/ru/problems/6125
+  * https://www.e-olymp.com/ru/problems/1 - проверим систему
+  * https://www.e-olymp.com/ru/problems/1087 - динамика
+  * https://www.e-olymp.com/ru/problems/1090 - динамика
+  * https://www.e-olymp.com/ru/problems/1618 - динамика
+  * https://www.e-olymp.com/ru/problems/6125 - очередь
 
 За каждое полностью рабочее решение дается 2 балла (да, даже за первую задачу).  
+
+## ДЗ 2.
+Задачи с e-olymp.com
+  * https://www.e-olymp.com/ru/problems/15 - динамика
+  * https://www.e-olymp.com/ru/problems/262 - динамику
+  * https://www.e-olymp.com/ru/problems/3837 - стек/очередь
+  * https://www.e-olymp.com/ru/problems/5327 - скобочки со стеком
+  * https://www.e-olymp.com/ru/problems/6124 - стек
+
+За каждое полностью рабочее решение дается 2 балла.  

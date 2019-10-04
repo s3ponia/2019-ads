@@ -22,6 +22,9 @@ plugins:
         - "java-typeresolution"
         - "java-unnecessary"
         - "java-unusedcode"
+    checks:
+      AvoidInstantiatingObjectsInLoops:
+        enabled: false
   sonar-java:
     enabled: true
     config:
