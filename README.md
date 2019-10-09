@@ -68,6 +68,7 @@ $ git checkout -b part1
 
 ## ДЗ 3.
 Задачи с e-olymp.com
+
 Дэдлайн - 22.10
   * https://www.e-olymp.com/ru/problems/3738 - Простая сортировка
   * https://www.e-olymp.com/ru/problems/1462 - Хитрая сортировка
