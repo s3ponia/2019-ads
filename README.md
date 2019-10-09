@@ -75,4 +75,3 @@ $ git checkout -b part1
   * https://www.e-olymp.com/ru/problems/4741 - Сортировка пузырьком
   * https://www.e-olymp.com/ru/problems/4827 - k-тая порядковая статистика
   * https://www.e-olymp.com/ru/problems/4037 - Сортировка слиянием
-  * https://www.e-olymp.com/ru/problems/1457 - Станция "Сортировочная"
