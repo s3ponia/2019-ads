@@ -4,47 +4,50 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.util.Arrays;
 
 /**
- * https://www.e-olymp.com/ru/submissions/5907983
+ * https://www.e-olymp.com/ru/submissions/5916868
  */
 public class KthStatistics {
 
-    private static void merge(BigInteger[] input, int start, int med, int e) {
-        BigInteger[] res = new BigInteger[e - start];
+    private static int partition(BigInteger[] arr, int low, int high) {
+        BigInteger pivot = arr[high];
+        int i = (low - 1);
+        for (int j = low; j < high; j++) {
+            if (arr[j].compareTo(pivot) < 0) {
+                i++;
 
-        int j = 0;
-        int it1 = start;
-        int it2 = med;
-
-        while (it1 < med && it2 < e) {
-            if (input[it1].compareTo(input[it2]) < 0) {
-                res[j++] = input[it1++];
-            } else {
-                res[j++] = input[it2++];
+                BigInteger temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
             }
         }
 
-        while (it1 < med) {
-            res[j++] = input[it1++];
-        }
+        BigInteger temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;
 
-        while (it2 < e) {
-            res[j++] = input[it2++];
-        }
-
-        System.arraycopy(res, 0, input, start, res.length);
-
+        return i + 1;
     }
 
-    private static void sort(BigInteger[] arr, int b, int e) {
-        if ((e - b) <= 1)
-            return;
+    private static BigInteger getKStatistics(BigInteger[] array, int k) {
+        int l = 0;
+        int r = array.length - 1;
 
-        sort(arr, b, (e + b) / 2);
-        sort(arr, (e + b) / 2, e);
-        merge(arr, b, (e + b) / 2, e);
+        while (l <= r) {
+            int temp = partition(array, l, r);
+            if (temp == k) {
+                return array[temp];
+            }
+            if (temp > k) {
+                r = temp - 1;
+            } else {
+                l = temp + 1;
+                k = k - temp + l - 1;
+            }
+        }
+
+        return array[k];
     }
 
     public static void main(String[] args) throws IOException {
@@ -57,8 +60,6 @@ public class KthStatistics {
             array[i] = new BigInteger(ints[i]);
         }
 
-        sort(array, 0, array.length);
-
-        System.out.println(array[array.length - k]);
+        System.out.println(getKStatistics(array, array.length - k));
     }
 }
