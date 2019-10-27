@@ -76,6 +76,9 @@ $ git checkout -b part1
   * https://www.e-olymp.com/ru/problems/4827 - k-тая порядковая статистика
   * https://www.e-olymp.com/ru/problems/4037 - Сортировка слиянием
   
+В задачах нельзя использовать `Arrays.sort()`/`Collections.sort()`. 
+На то они и задачи на сортировку, чтобы мы сами пописали эти сортировки.  
+  
 ## ДЗ 4.
 Задачи с e-olymp.com
 
@@ -87,4 +90,13 @@ $ git checkout -b part1
   * https://www.e-olymp.com/ru/problems/1457 - Станция "Сортировочная"
   * https://www.e-olymp.com/ru/problems/9016 - Бинарный поиск
   * https://www.e-olymp.com/ru/problems/5149 - Коровы - в стойла
+  
+## ДЗ 5.
+
+Дэдлайн - 5.11
+  * https://www.e-olymp.com/ru/problems/3968 - Квадратный корень
+  * https://www.e-olymp.com/ru/problems/3969 - Дипломы 
+  * https://www.e-olymp.com/ru/problems/264 - Наибольшая последовательнократная подпоследовательность
+  * https://www.e-olymp.com/ru/problems/991 - Шаблон и слово
+  * https://www.e-olymp.com/ru/problems/2169 - Перестановки
     
