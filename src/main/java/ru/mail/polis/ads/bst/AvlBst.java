@@ -25,7 +25,7 @@ public class AvlBst<Key extends Comparable<Key>, Value>
     }
 
     @Override
-    public void remove(Key key) {
+    public Value remove(Key key) {
         throw new UnsupportedOperationException("Implement me");
     }
 
