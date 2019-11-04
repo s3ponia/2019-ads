@@ -7,7 +7,6 @@ public class AvlBst<Key extends Comparable<Key>, Value>
         implements Bst<Key, Value> {
 
     private Node root = null;
-    private int size = 0;
 
     private class Node {
         Node(Key key, Value value, Node parent) {
@@ -24,32 +23,30 @@ public class AvlBst<Key extends Comparable<Key>, Value>
         int height = 1;
     }
 
-    private Node rotateLeft(Node node) {
+    private Node rotateLeft(final Node node) {
         if (node == null || node.left == null)
             return node;
         Node x = node.left;
-        Node temp = node.left;
         node.left = node.left.right;
-        if (temp.right != null)
-            temp.right.parent = node.left;
+        if (x.right != null)
+            x.right.parent = node;
         x.right = node;
-        node.parent = x.right;
+        node.parent = x;
         fixHeight(node);
         fixHeight(x);
         return x;
     }
 
-    private Node rotateRight(Node node) {
+    private Node rotateRight(final Node node) {
         if (node == null || node.right == null)
             return node;
 
         Node x = node.right;
-        Node temp = node.right;
         node.right = node.right.left;
-        if (temp.left != null)
-            temp.left.parent = node.right;
+        if (x.left != null)
+            x.left.parent = node;
         x.left = node;
-        node.parent = x.left;
+        node.parent = x;
         fixHeight(node);
         fixHeight(x);
         return x;
@@ -71,6 +68,8 @@ public class AvlBst<Key extends Comparable<Key>, Value>
             node = rotateRight(node);
         }
 
+        fixHeight(node);
+
         return node;
     }
 
@@ -83,19 +82,27 @@ public class AvlBst<Key extends Comparable<Key>, Value>
         return node;
     }
 
-    private int factor(Node node) {
+    private int factor(final Node node) {
         return height(node.left) - height(node.right);
     }
 
-    private int height(Node node) {
+    private int height(final Node node) {
         return node == null ? 0 : node.height;
     }
 
-    private void fixHeight(Node node) {
+    private void fixHeight(final Node node) {
         node.height = Math.max(height(node.left), height(node.right)) + 1;
     }
 
-    private Node getKeyPos(Key key, Node node) {
+    private void fixHeightAllSub(final Node node) {
+        if (node == null)
+            return;
+        fixHeightAllSub(node.left);
+        fixHeightAllSub(node.right);
+        fixHeight(node);
+    }
+
+    private Node getKeyPos(Key key, final Node node) {
         if (node == null)
             return null;
 
@@ -112,7 +119,7 @@ public class AvlBst<Key extends Comparable<Key>, Value>
         }
     }
 
-    private Node get(Key key, Node node) {
+    private Node get(Key key, final Node node) {
         if (node == null)
             return null;
 
@@ -147,10 +154,44 @@ public class AvlBst<Key extends Comparable<Key>, Value>
         return node;
     }
 
-    private int size(Node node) {
+    private int size(final Node node) {
         if (node == null || (node.left == null && node.right == null))
             return 0;
         return size(node.left) + size(node.right) + 1;
+    }
+
+    private Node previous(final Node node) {
+        if (node == null)
+            return null;
+
+        Node temp = node;
+        if (temp.left != null)
+            return temp.left;
+
+        while (temp.parent != null && temp.parent.left == temp)
+            temp = temp.parent;
+
+        if (temp.parent == null || temp.parent.key.compareTo(node.key) > 0)
+            return node;
+
+        return temp.parent;
+    }
+
+    private Node next(final Node node) {
+        if (node == null)
+            return null;
+
+        Node temp = node;
+        if (temp.right != null)
+            return temp.right;
+
+        while (temp.parent != null && temp.parent.right == temp)
+            temp = temp.parent;
+
+        if (temp.parent == null || temp.parent.key.compareTo(node.key) < 0)
+            return node;
+
+        return temp.parent;
     }
 
     @Override
@@ -161,7 +202,6 @@ public class AvlBst<Key extends Comparable<Key>, Value>
 
     @Override
     public void put(Key key, Value value) {
-        ++size;
         if (root == null) {
             root = new Node(key, value, null);
             return;
@@ -174,6 +214,7 @@ public class AvlBst<Key extends Comparable<Key>, Value>
         } else {
             parent.value = value;
         }
+
         root = fixAllSub(root);
     }
 
@@ -195,15 +236,9 @@ public class AvlBst<Key extends Comparable<Key>, Value>
             } else if (pointer.right.right == null) {
                 pointer.right = null;
             } else {
-//                pointer.right = pointer.right.right;
+                pointer.right = pointer.right.right;
             }
-
-            root = fixAllSub(root);
-
-            return ret;
-        }
-
-        if (pointer.left != null) {
+        } else if (pointer.left != null) {
             Node maximum = findMax(pointer.left);
 
             pointer.key = maximum.key;
@@ -213,20 +248,11 @@ public class AvlBst<Key extends Comparable<Key>, Value>
             } else if (pointer.left.left == null) {
                 pointer.left = null;
             } else {
-//                pointer.left = pointer.left.left;
+                pointer.left = pointer.left.left;
             }
-
-            root = fixAllSub(root);
-
-            return ret;
-        }
-
-        if (pointer == root) {
+        } else if (pointer == root) {
             root = null;
-            return ret;
-        }
-
-        if (pointer.parent.left == pointer) {
+        } else if (pointer.parent.left == pointer) {
             pointer.parent.left = null;
         } else {
             pointer.parent.right = null;
@@ -264,22 +290,41 @@ public class AvlBst<Key extends Comparable<Key>, Value>
     @Override
     public Key floor(Key key) {
         Node pointer = getKeyPos(key, root);
-        return pointer == null ? null : pointer.key;
+        if (pointer == null)
+            return null;
+        while (pointer.key.compareTo(key) >= 0) {
+            Node temp = pointer;
+            pointer = previous(temp);
+            if (temp == pointer)
+                return null;
+        }
+
+        return pointer.key;
     }
 
     @Override
     public Key ceil(Key key) {
-        Node parent = getKeyPos(key, root);
-        return parent == null ? null : parent.key;
+        Node pointer = getKeyPos(key, root);
+        if (pointer == null)
+            return null;
+        while (pointer.key.compareTo(key) <= 0) {
+            Node temp = pointer;
+            pointer = next(temp);
+            if (temp == pointer)
+                return null;
+        }
+
+        return pointer.key;
     }
 
     @Override
     public int size() {
-        return size(root) + (root != null ? 1 : 0);
+        return root == null ? 0 : (size(root.left) + size(root.right) + 1);
     }
 
     @Override
     public int height() {
+        fixHeightAllSub(root);
         return height(root);
     }
 }

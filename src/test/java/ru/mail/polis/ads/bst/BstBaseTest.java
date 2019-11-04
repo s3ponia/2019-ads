@@ -64,19 +64,41 @@ class BstBaseTest {
         assert (bst.height() <= maxHeight(5));
 
         assertEquals(3, bst.remove(3));
+        assertNull(bst.get(3));
+        assertEquals(2, bst.size());
         assertEquals(5, bst.get(5));
+        assertEquals(2, bst.get(2));
+        assertEquals(1, bst.get(1));
+        assertEquals(4, bst.get(4));
     }
 
     @Test
-    void orderedPutRemove() {
+    void orderInput() {
         Bst<Integer, Integer> function2X = new AvlBst<>();
 
-        for (int i = 0; i < 10000; i++) {
+        function2X.put(0, 0);
+        for (int i = 1; i < 10000; i++) {
             function2X.put(i, 2 * i);
-            if (i % 2 != 0) {
-                assertEquals(i / 2 * 2, function2X.remove(i / 2));
-            }
+            assertEquals(i - 1, function2X.floor(i));
+            assertEquals(i, function2X.ceil(i - 1));
             assert (function2X.height() <= maxHeight(i + 1));
+        }
+    }
+
+    @Test
+    void reverseOrderInput() {
+        Bst<Integer, Integer> function2X = new AvlBst<>();
+
+        int i = 10000;
+        function2X.put(i, 2 * i);
+        i--;
+        int count = 1;
+        for (; i >= 0; i--) {
+            function2X.put(i, 2 * i);
+            count++;
+            assertEquals(i, function2X.floor(i + 1));
+            assertEquals(i + 1, function2X.ceil(i));
+            assert (function2X.height() <= maxHeight(count));
         }
     }
 
