@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BstBaseTest {
     
     Bst<String, String> newBst() {
-        return new AvlBst<>();
+        return new RedBlackBst<>();
     } 
     
     @Test

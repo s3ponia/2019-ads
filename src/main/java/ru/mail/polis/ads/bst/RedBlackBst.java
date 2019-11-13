@@ -4,17 +4,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * AVL implementation of binary search tree.
+ * LLRB implementation of binary search tree.
  */
-public class AvlBst<Key extends Comparable<Key>, Value>
+public class RedBlackBst<Key extends Comparable<Key>, Value>
         implements Bst<Key, Value> {
 
+    private static final boolean BLACK = false;
+    private static final boolean RED = true;
+    
     private class Node {
         Key key;
         Value value;
         Node left;
         Node right;
-        int height;
+        boolean color;
     }
 
     @Nullable
