@@ -34,42 +34,439 @@ class BstBaseTest {
     @Test
     void remove() {
         Bst<String, String> bst = newBst();
-        bst.put("A", "B");
-        assertEquals("B", bst.remove("A"));
+        bst.put("A", "A");
+        assertEquals("A", bst.remove("A"));
         assertNull(bst.remove("C"));
 
-        bst.put("C", "D");
-        bst.put("E", "F");
-        bst.put("G", "H");
-        bst.put("K", "L");
+        bst.put("C", "C");
+        bst.put("E", "E");
+        bst.put("G", "G");
+        bst.put("K", "K");
 
         assert (bst.height() <= maxHeight(4));
 
-        assertEquals("D", bst.get("C"));
-        assertEquals("F", bst.remove("E"));
+        assertEquals("E", bst.remove("E"));
+        assertEquals("C", bst.get("C"));
         assert (bst.height() <= maxHeight(3));
-        assertEquals("L", bst.get("K"));
+        assertEquals("K", bst.get("K"));
     }
 
     @Test
     void remove2() {
+        /*
+            Test remove for:
+                A
+         */
         Bst<Integer, Integer> bst = new AvlBst<>();
 
+        bst.put(1, 1);
+        assertEquals(1, bst.height());
+        assertEquals(1, bst.remove(1));
+        assertNull(bst.get(1));
+        assertEquals(0, bst.height());
+        /*
+            Test remove for:
+                A
+               /
+              B
+         */
+        bst = new AvlBst<>();
+
+        bst.put(2, 2);
+        bst.put(1, 1);
+
+        assertEquals(2, bst.height());
+        assertEquals(2, bst.remove(2));
+        assertNull(bst.get(2));
+        assertEquals(1, bst.get(1));
+        assertEquals(1, bst.height());
+        /*
+            Test remove for:
+                A
+                 \
+                  B
+         */
+        bst = new AvlBst<>();
+
+        bst.put(1, 1);
+        bst.put(2, 2);
+
+        assertEquals(2, bst.height());
+        assertEquals(1, bst.remove(1));
+        assertNull(bst.get(1));
+        assertEquals(2, bst.get(2));
+        assertEquals(1, bst.height());
+        /*
+            Test remove for:
+                A
+               / \
+              B   C
+         */
+        bst = new AvlBst<>();
+
+        bst.put(2, 2);
+        bst.put(1, 1);
+        bst.put(3, 3);
+
+        assertEquals(2, bst.height());
+        assertEquals(2, bst.remove(2));
+        assertNull(bst.get(2));
+        assertEquals(1, bst.get(1));
+        assertEquals(3, bst.get(3));
+        assertEquals(2, bst.height());
+        /*
+            Test remove for:
+                A
+               / \
+              B   C
+             /
+            D
+         */
+        bst = new AvlBst<>();
+
+        bst.put(3, 3);
+        bst.put(2, 2);
+        bst.put(4, 4);
+        bst.put(1, 1);
+
+        assertEquals(3, bst.height());
+        assertEquals(3, bst.remove(3));
+        assertNull(bst.get(3));
+        assertEquals(1, bst.get(1));
+        assertEquals(2, bst.get(2));
+        assertEquals(4, bst.get(4));
+        assertEquals(2, bst.height());
+        /*
+            Test remove for:
+                A
+               / \
+              B   C
+               \
+                D
+         */
+        bst = new AvlBst<>();
+
+        bst.put(3, 3);
+        bst.put(1, 1);
+        bst.put(4, 4);
+        bst.put(2, 2);
+
+        assertEquals(3, bst.height());
+        assertEquals(3, bst.remove(3));
+        assertNull(bst.get(3));
+        assertEquals(1, bst.get(1));
+        assertEquals(2, bst.get(2));
+        assertEquals(4, bst.get(4));
+        assertEquals(2, bst.height());
+        /*
+            Test remove for:
+                A
+               / \
+              B   C
+                 /
+                D
+         */
+        bst = new AvlBst<>();
+
+        bst.put(2, 2);
+        bst.put(1, 1);
+        bst.put(4, 4);
+        bst.put(3, 3);
+
+        assertEquals(3, bst.height());
+        assertEquals(2, bst.remove(2));
+        assertNull(bst.get(2));
+        assertEquals(1, bst.get(1));
+        assertEquals(3, bst.get(3));
+        assertEquals(4, bst.get(4));
+        assertEquals(2, bst.height());
+        /*
+            Test remove for:
+                A
+               / \
+              B   C
+                   \
+                    D
+         */
+        bst = new AvlBst<>();
+
+        bst.put(2, 2);
+        bst.put(1, 1);
+        bst.put(3, 3);
+        bst.put(4, 4);
+
+        assertEquals(3, bst.height());
+        assertEquals(2, bst.remove(2));
+        assertNull(bst.get(2));
+        assertEquals(1, bst.get(1));
+        assertEquals(3, bst.get(3));
+        assertEquals(4, bst.get(4));
+        assertEquals(2, bst.height());
+        /*
+            Test remove for:
+                A
+               / \
+              B   C
+             / \
+            D   E
+         */
+        bst = new AvlBst<>();
+
+        bst.put(4, 4);
+        bst.put(5, 5);
+        bst.put(2, 2);
+        bst.put(3, 3);
+        bst.put(1, 1);
+
+        assertEquals(3, bst.height());
+        assertEquals(4, bst.remove(4));
+        assertNull(bst.get(4));
+        assertEquals(1, bst.get(1));
+        assertEquals(2, bst.get(2));
+        assertEquals(3, bst.get(3));
+        assertEquals(5, bst.get(5));
+        assertEquals(3, bst.height());
+        /*
+            Test remove for:
+                A
+               / \
+              B   C
+             /   /
+            D   E
+         */
+        bst = new AvlBst<>();
+
+        bst.put(3, 3);
+        bst.put(2, 2);
+        bst.put(5, 5);
+        bst.put(4, 4);
+        bst.put(1, 1);
+
+        assertEquals(3, bst.height());
+        assertEquals(3, bst.height());
+        assertEquals(3, bst.remove(3));
+        assertNull(bst.get(3));
+        assertEquals(1, bst.get(1));
+        assertEquals(2, bst.get(2));
+        assertEquals(4, bst.get(4));
+        assertEquals(5, bst.get(5));
+        /*
+            Test remove for:
+                A
+              /   \
+             B     C
+            /       \
+           D         E
+         */
+        bst = new AvlBst<>();
         bst.put(3, 3);
         bst.put(4, 4);
         bst.put(2, 2);
         bst.put(5, 5);
         bst.put(1, 1);
 
-        assert (bst.height() <= maxHeight(5));
-
+        assertEquals(3, bst.height());
         assertEquals(3, bst.remove(3));
         assertNull(bst.get(3));
-        assertEquals(2, bst.size());
+        assertEquals(3, bst.height());
         assertEquals(5, bst.get(5));
         assertEquals(2, bst.get(2));
         assertEquals(1, bst.get(1));
         assertEquals(4, bst.get(4));
+        /*
+            Test remove for:
+                A
+              /   \
+             B     C
+              \   /
+              D   E
+         */
+        bst = new AvlBst<>();
+        bst.put(3, 3);
+        bst.put(5, 5);
+        bst.put(1, 1);
+        bst.put(4, 4);
+        bst.put(2, 2);
+
+        assertEquals(3, bst.height());
+        assertEquals(3, bst.remove(3));
+        assertNull(bst.get(3));
+        assertEquals(3, bst.height());
+        assertEquals(5, bst.get(5));
+        assertEquals(2, bst.get(2));
+        assertEquals(1, bst.get(1));
+        assertEquals(4, bst.get(4));
+        /*
+            Test remove for:
+                A
+              /   \
+             B     C
+              \     \
+               D     E
+         */
+        bst = new AvlBst<>();
+        bst.put(3, 3);
+        bst.put(4, 4);
+        bst.put(1, 1);
+        bst.put(5, 5);
+        bst.put(2, 2);
+
+        assertEquals(3, bst.height());
+        assertEquals(3, bst.remove(3));
+        assertNull(bst.get(3));
+        assertEquals(3, bst.height());
+        assertEquals(5, bst.get(5));
+        assertEquals(2, bst.get(2));
+        assertEquals(1, bst.get(1));
+        assertEquals(4, bst.get(4));
+        /*
+            Test remove for:
+                A
+              /   \
+             B     C
+                  / \
+                 D   E
+         */
+        bst = new AvlBst<>();
+        bst.put(2, 2);
+        bst.put(3, 3);
+        bst.put(1, 1);
+        bst.put(4, 4);
+        bst.put(5, 5);
+
+        assertEquals(3, bst.height());
+        assertEquals(2, bst.remove(2));
+        assertNull(bst.get(2));
+        assertEquals(3, bst.height());
+        assertEquals(5, bst.get(5));
+        assertEquals(3, bst.get(3));
+        assertEquals(1, bst.get(1));
+        assertEquals(4, bst.get(4));
+        /*
+            Test remove for:
+                A
+              /   \
+             B     C
+            / \   /
+           D   E F
+         */
+
+        bst = new AvlBst<>();
+        bst.put(4, 4);
+        bst.put(6, 6);
+        bst.put(2, 2);
+        bst.put(5, 5);
+        bst.put(1, 1);
+        bst.put(3, 3);
+
+        assertEquals(3, bst.height());
+        assertEquals(4, bst.remove(4));
+        assertEquals(3, bst.height());
+        assertNull(bst.get(4));
+        for (int i = 1; i < 7; i++) {
+            if (i != 4)
+                assertEquals(i, bst.get(i));
+        }
+        /*
+            Test remove for:
+                A
+              /   \
+             B     C
+            / \     \
+           D   E     F
+         */
+
+        bst = new AvlBst<>();
+        bst.put(4, 4);
+        bst.put(5, 5);
+        bst.put(2, 2);
+        bst.put(6, 6);
+        bst.put(1, 1);
+        bst.put(3, 3);
+
+        assertEquals(3, bst.height());
+        assertEquals(4, bst.remove(4));
+        assertEquals(3, bst.height());
+        assertNull(bst.get(4));
+        for (int i = 1; i < 7; i++) {
+            if (i != 4)
+                assertEquals(i, bst.get(i));
+        }
+        /*
+            Test remove for:
+                A
+              /   \
+             B     C
+            /     / \
+           D     E   F
+         */
+
+        bst = new AvlBst<>();
+
+        bst.put(3, 3);
+        bst.put(5, 5);
+        bst.put(2, 2);
+        bst.put(6, 6);
+        bst.put(1, 1);
+        bst.put(4, 4);
+
+        assertEquals(3, bst.height());
+        assertEquals(3, bst.remove(3));
+        assertEquals(3, bst.height());
+        assertNull(bst.get(3));
+        for (int i = 1; i < 7; i++) {
+            if (i != 3)
+                assertEquals(i, bst.get(i));
+        }
+        /*
+            Test remove for:
+                A
+              /   \
+             B     C
+              \   / \
+               D E   F
+         */
+
+        bst = new AvlBst<>();
+
+        bst.put(3, 3);
+        bst.put(5, 5);
+        bst.put(1, 1);
+        bst.put(6, 6);
+        bst.put(4, 4);
+        bst.put(2, 2);
+
+        assertEquals(3, bst.remove(3));
+        assertEquals(3, bst.height());
+        assertNull(bst.get(3));
+        for (int i = 1; i < 7; i++) {
+            if (i != 3)
+                assertEquals(i, bst.get(i));
+        }
+        /*
+            Test remove for:
+                 A
+              /    \
+             B      C
+            / \    / \
+           D   E  F   G
+         */
+        bst = new AvlBst<>();
+        bst.put(4, 4);
+        bst.put(6, 6);
+        bst.put(2, 2);
+        bst.put(7, 7);
+        bst.put(5, 5);
+        bst.put(1, 1);
+        bst.put(3, 3);
+
+        assertEquals(4, bst.remove(4));
+        assertEquals(3, bst.height());
+        assertNull(bst.get(4));
+        for (int i = 1; i < 8; i++) {
+            if (i != 4)
+                assertEquals(i, bst.get(i));
+        }
     }
 
     @Test
