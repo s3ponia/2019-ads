@@ -37,7 +37,7 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
         node.color = !node.color;
     }
 
-    private void flipColor(Node node) {
+    private void flipColors(Node node) {
         if (node == null)
             return;
         flipColorNode(node);
@@ -77,24 +77,13 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
         int cmp = key.compareTo(node.key);
         if (cmp > 0) {
             node.right = put(node.right, key, value);
-            if (isRed(node.right)) {
-                if (isRed(node.left)) {
-                    flipColor(node);
-                } else {
-                    node = rotateLeft(node);
-                }
-            }
         } else if (cmp < 0) {
             node.left = put(node.left, key, value);
-            if (isRed(node.left) && isRed(node.left.left)) {
-                node = rotateRight(node);
-                flipColor(node);
-            }
         } else {
             node.value = value;
         }
 
-        return node;
+        return fixUp(node);
     }
 
     private Node get(Node node, @NotNull Key key) {
@@ -127,6 +116,114 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
         return max(node.right);
     }
 
+    private Node fixUp(Node node) {
+        if (isRed(node.right))
+            node = rotateLeft(node);
+        if (isRed(node.left) && isRed(node.left.left))
+            node = rotateRight(node);
+        if (isRed(node.right) && isRed(node.left))
+            flipColors(node);
+        return node;
+    }
+
+    private Node moveRedRight(Node node) {
+        flipColors(node);
+        if (isRed(node.left.left)) {
+            node = rotateRight(node);
+            flipColors(node);
+        }
+        return node;
+    }
+
+    private Node deleteMax(Node node) {
+        if (isRed(node.left))
+            node = rotateRight(node);
+        if (node.right == null)
+            return null;
+        if (!isRed(node.right) && !isRed(node.right.left))
+            node = moveRedRight(node);
+        node.right = deleteMax(node.right);
+        return fixUp(node);
+    }
+
+    private Node moveRedLeft(Node node) {
+        flipColors(node);
+        if (isRed(node.right.left)) {
+            node.right = rotateRight(node.right);
+            node = rotateLeft(node);
+            flipColors(node);
+        }
+        return node;
+    }
+
+    private Node deleteMin(Node node) {
+        if (node.left == null)
+            return null;
+        if (!isRed(node.left) && !isRed(node.left.left))
+            node = moveRedLeft(node);
+        node.left = deleteMin(node.left);
+        return fixUp(node);
+    }
+
+    private Node remove(Node node, @NotNull Key key) {
+        if (node == null)
+            return null;
+        int cmp = key.compareTo(node.key);
+        if (cmp < 0) {
+            if (node.left != null) {
+                if (!isRed(node.left) && !isRed(node.left.left))
+                    node = moveRedLeft(node);
+                node.left = remove(node.left, key);
+            }
+        } else if (cmp > 0) {
+            if (isRed(node.left))
+                node = rotateRight(node);
+            if (node.right != null) {
+                if (!isRed(node.right) && !isRed(node.right.right))
+                    node = moveRedRight(node);
+                node.right = remove(node.right, key);
+            }
+        } else {
+            Node temp = min(node.right);
+            Node save_state = node;
+            if (temp != null) {
+                node.value = temp.value;
+                node.key = temp.key;
+            }
+            if (isRed(node.left))
+                node = rotateRight(node);
+            if (node.right == null)
+                return null;
+
+            if (!isRed(node.right) && !isRed(node.right.right)) {
+                node = moveRedRight(node);
+            }
+            if (node.right == save_state && save_state.right != null)
+                node.right.right = deleteMin(node.right.right);
+            else
+                node.right = deleteMin(node.right);
+        }
+
+        return fixUp(node);
+    }
+
+    private int size(Node node) {
+        if (node == null)
+            return 0;
+        return size(node.left) + size(node.right) + 1;
+    }
+
+    private void resetBLACK(Node node) {
+        if (node == null)
+            return;
+        node.color = BLACK;
+    }
+
+    private int height(Node node) {
+        if (node == null)
+            return 0;
+        return Math.max(height(node.left), height(node.right)) + 1;
+    }
 
     @Nullable
     @Override
@@ -138,13 +235,49 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
     @Override
     public void put(@NotNull Key key, @NotNull Value value) {
         root = put(root, key, value);
-        root.color = BLACK;
+        resetBLACK(root);
     }
 
     @Nullable
     @Override
     public Value remove(@NotNull Key key) {
-        throw new UnsupportedOperationException("Implement me");
+        Node temp = get(root, key);
+        if (temp == null)
+            return null;
+        Value val = temp.value;
+        root = remove(root, key);
+        resetBLACK(root);
+        return val;
+    }
+
+    private Node ceil(Node node, @NotNull Key key) {
+        if (node == null)
+            return null;
+
+        int cmp = key.compareTo(node.key);
+
+        if (cmp > 0)
+            return ceil(node.right, key);
+        else if (cmp == 0)
+            return node;
+
+        Node temp = ceil(node.left, key);
+        return temp == null ? node : temp;
+    }
+
+    private Node floor(Node node, @NotNull Key key) {
+        if (node == null)
+            return null;
+
+        int cmp = key.compareTo(node.key);
+
+        if (cmp < 0)
+            return floor(node.left, key);
+        else if (cmp == 0)
+            return node;
+
+        Node temp = floor(node.right, key);
+        return temp == null ? node : temp;
     }
 
     @Nullable
@@ -178,22 +311,24 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
     @Nullable
     @Override
     public Key floor(@NotNull Key key) {
-        throw new UnsupportedOperationException("Implement me");
+        Node temp = floor(root, key);
+        return temp == null ? null : temp.key;
     }
 
     @Nullable
     @Override
     public Key ceil(@NotNull Key key) {
-        throw new UnsupportedOperationException("Implement me");
+        Node temp = ceil(root, key);
+        return temp == null ? null : temp.key;
     }
 
     @Override
     public int size() {
-        throw new UnsupportedOperationException("Implement me");
+        return size(root);
     }
 
     @Override
     public int height() {
-        throw new UnsupportedOperationException("Implement me");
+        return height(root);
     }
 }
