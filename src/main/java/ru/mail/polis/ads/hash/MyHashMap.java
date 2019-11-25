@@ -97,6 +97,7 @@ public class MyHashMap<Key, Value> implements HashTable<Key, Value> {
         if (node == null) {
             table[tableHash] = put(table[tableHash], new Node<>(key, value, hash));
         } else {
+            --size;
             node.value = value;
         }
 
