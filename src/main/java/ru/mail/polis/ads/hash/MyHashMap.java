@@ -88,18 +88,21 @@ public class MyHashMap<Key, Value> implements HashTable<Key, Value> {
     }
 
     private void putVal(@NotNull Key key, @NotNull Value value) {
-        ++size;
-        if (size > threshold)
+        if (table == null)
             resize();
+
         int hash = key.hashCode();
         int tableHash = hash & (table.length - 1);
         Node<Key, Value> node = get(table[tableHash], key, hash);
         if (node == null) {
+            ++size;
             table[tableHash] = put(table[tableHash], new Node<>(key, value, hash));
         } else {
-            --size;
             node.value = value;
         }
+
+        if (size > threshold)
+            resize();
 
     }
 
