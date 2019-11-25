@@ -184,16 +184,17 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
                 node.right = remove(node.right, key);
             }
         } else {
-            Node temp = min(node.right);
             Node save_state = node;
-            if (temp != null) {
-                node.value = temp.value;
-                node.key = temp.key;
-            }
             if (isRed(node.left))
                 node = rotateRight(node);
             if (node.right == null)
                 return null;
+            
+            Node temp = min(node.right);
+            if (temp != null) {
+                save_state.value = temp.value;
+                save_state.key = temp.key;
+            }
 
             if (!isRed(node.right) && !isRed(node.right.right)) {
                 node = moveRedRight(node);
