@@ -12,6 +12,7 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
     private static final boolean BLACK = false;
     private static final boolean RED = true;
     private Node root = null;
+    private int size = 0;
 
     private class Node {
         Node(Key key, Value value) {
@@ -24,6 +25,18 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
         Node left = null;
         Node right = null;
         boolean color = RED;
+        int height = 1;
+    }
+
+    private int height(Node node) {
+        return node == null ? 0 : node.height;
+    }
+
+    private void fixHeight(Node node) {
+        if (node == null)
+            return;
+
+        node.height = Math.max(height(node.right), height(node.left));
     }
 
     private boolean isRed(Node node) {
@@ -54,6 +67,8 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
         boolean color = node.color;
         node.color = x.color;
         x.color = color;
+        fixHeight(node);
+        fixHeight(x);
         return x;
     }
 
@@ -67,6 +82,8 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
         boolean color = node.color;
         node.color = x.color;
         x.color = color;
+        fixHeight(node);
+        fixHeight(x);
         return x;
     }
 
@@ -81,6 +98,7 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
             node.left = put(node.left, key, value);
         } else {
             node.value = value;
+            --size;
         }
 
         return fixUp(node);
@@ -135,17 +153,6 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
         return node;
     }
 
-    private Node deleteMax(Node node) {
-        if (isRed(node.left))
-            node = rotateRight(node);
-        if (node.right == null)
-            return null;
-        if (!isRed(node.right) && !isRed(node.right.left))
-            node = moveRedRight(node);
-        node.right = deleteMax(node.right);
-        return fixUp(node);
-    }
-
     private Node moveRedLeft(Node node) {
         flipColors(node);
         if (isRed(node.right.left)) {
@@ -157,7 +164,7 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
     }
 
     private Node deleteMin(Node node) {
-        if (node.left == null)
+        if (node == null || node.left == null)
             return null;
         if (!isRed(node.left) && !isRed(node.left.left))
             node = moveRedLeft(node);
@@ -189,14 +196,14 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
                 node = rotateRight(node);
             if (node.right == null)
                 return null;
-            
+
             Node temp = min(node.right);
             if (temp != null) {
                 save_state.value = temp.value;
                 save_state.key = temp.key;
             }
 
-            if (!isRed(node.right) && !isRed(node.right.right)) {
+            if (node.right != null && !isRed(node.right) && !isRed(node.right.right)) {
                 node = moveRedRight(node);
             }
             if (node.right == save_state && save_state.right != null)
@@ -208,22 +215,10 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
         return fixUp(node);
     }
 
-    private int size(Node node) {
-        if (node == null)
-            return 0;
-        return size(node.left) + size(node.right) + 1;
-    }
-
     private void resetBLACK(Node node) {
         if (node == null)
             return;
         node.color = BLACK;
-    }
-
-    private int height(Node node) {
-        if (node == null)
-            return 0;
-        return Math.max(height(node.left), height(node.right)) + 1;
     }
 
     @Nullable
@@ -235,6 +230,7 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
 
     @Override
     public void put(@NotNull Key key, @NotNull Value value) {
+        ++size;
         root = put(root, key, value);
         resetBLACK(root);
     }
@@ -245,6 +241,7 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
         Node temp = get(root, key);
         if (temp == null)
             return null;
+        --size;
         Value val = temp.value;
         root = remove(root, key);
         resetBLACK(root);
@@ -325,7 +322,7 @@ public class RedBlackBst<Key extends Comparable<Key>, Value>
 
     @Override
     public int size() {
-        return size(root);
+        return size;
     }
 
     @Override
