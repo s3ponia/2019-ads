@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * https://www.e-olymp.com/ru/submissions/6298440
+ * https://www.e-olymp.com/ru/submissions/6298446
  */
 public class Task2 {
     private final static int WHITE = 0;
@@ -17,7 +17,6 @@ public class Task2 {
     private static int[] previous;
     private static List<List<Integer>> graph;
     private static boolean[] inLoop;
-    private static int minimum;
 
     private static void dfs(final int node) {
         Stack<Integer> stack = new Stack<>();
@@ -26,7 +25,7 @@ public class Task2 {
         while (!stack.empty()) {
             int curr = stack.peek();
             used[curr] = GREY;
-            int count = 0;
+            boolean count = false;
 
             for (Integer end :
                     graph.get(curr)) {
@@ -37,7 +36,7 @@ public class Task2 {
                 if (used[end] == WHITE) {
                     previous[end] = curr;
                     stack.add(end);
-                    ++count;
+                    count = true;
                     break;
                 } else if (used[end] == GREY) {
 
@@ -54,7 +53,7 @@ public class Task2 {
 
                 }
             }
-            if (count == 0) {
+            if (!count) {
                 stack.pop();
                 used[curr] = BLACK;
             }
@@ -86,13 +85,7 @@ public class Task2 {
         graph = new ArrayList<>(n + 1);
 
         for (int i = 0; i < n + 1; i++) {
-            graph.add(new ArrayList<>());
-        }
-
-        for (int i = 0; i < n + 1; i++) {
-            used[i] = WHITE;
-            previous[i] = -1;
-            inLoop[i] = false;
+            graph.add(new ArrayList<>(10));
         }
 
         for (int i = 0; i < m; i++) {
@@ -105,8 +98,7 @@ public class Task2 {
 
         setMinimum();
 
-
-        minimum = graph.size();
+        int minimum = graph.size();
 
         for (int i = 1; i < inLoop.length; i++) {
             if (inLoop[i] && minimum > i) {
