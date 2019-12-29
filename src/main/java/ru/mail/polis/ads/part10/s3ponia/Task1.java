@@ -1,21 +1,21 @@
 package ru.mail.polis.ads.part10.s3ponia;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
+/**
+ * https://www.e-olymp.com/ru/submissions/6427186
+ */
 public class Task1 {
 
     private static List<List<Pair>> graph;
     private static int[] tin;
     private static int[] fup;
-    private static boolean[] used;
+    private static boolean[] isBridge;
+    private static int bridgeCount = 0;
     private static int order = 1;
-    private static List<Integer> answer;
 
     static class Pair {
         int edge;
@@ -28,22 +28,22 @@ public class Task1 {
     }
 
     static void dfs(int v, int p) {
-        used[v] = true;
-        tin[v] = fup[v] = order++;
+        tin[v] = fup[v] = ++order;
         for (Pair edge :
                 graph.get(v)) {
-            int to = edge.end;
-            if (to == p)
+            if (edge.edge == p)
                 continue;
-            if (used[to]) {
-                fup[v] = Math.min(fup[v], tin[to]);
+            if (tin[edge.end] != 0) {
+                fup[v] = Math.min(fup[v], tin[edge.end]);
             } else {
-                dfs(to, v);
-                fup[v] = Math.min(fup[v], fup[to]);
-                if (fup[to] > tin[v]) {
-                    answer.add(edge.edge);
-                }
+                dfs(edge.end, edge.edge);
+                fup[v] = Math.min(fup[v], fup[edge.end]);
             }
+        }
+
+        if (p != -1 && fup[v] == tin[v]) {
+            isBridge[p] = true;
+            ++bridgeCount;
         }
     }
 
@@ -53,45 +53,73 @@ public class Task1 {
 
     static void dfsAll() {
         for (int i = 0; i < graph.size(); i++) {
-            if (!used[i])
+            if (tin[i] == 0)
                 dfs(i);
         }
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
-        PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
+    private static class FastScanner {
+        private final BufferedReader reader;
+        private StringTokenizer tokenizer;
 
-        int n = scanner.nextInt();
-        int m = scanner.nextInt();
-
-        graph = new ArrayList<>(n);
-        tin = new int[n];
-        fup = new int[n];
-        used = new boolean[n];
-        answer = new ArrayList<>(m);
-
-        for (int i = 0; i < n; i++) {
-            graph.add(new ArrayList<>(m));
+        FastScanner(final InputStream in) {
+            reader = new BufferedReader(new InputStreamReader(in));
         }
 
-        for (int i = 0; i < m; i++) {
-            int b = scanner.nextInt() - 1;
-            int e = scanner.nextInt() - 1;
-
-            graph.get(b).add(new Pair(i, e));
-            graph.get(e).add(new Pair(i, b));
+        String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return tokenizer.nextToken();
         }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+    }
+
+    private static void solve(final FastScanner in, final PrintWriter out) {
+        final int n = in.nextInt();
+        final int m = in.nextInt();
+
+        graph = new ArrayList<>();
+        isBridge = new boolean[m+1];
+        tin = new int[n+1];
+        fup = new int[n+1];
+        for (int i = 0; i < n+1; i++) {
+            graph.add(new ArrayList<>());
+            tin[i] = 0;
+            fup[i] = 0;
+        }
+        for (int i = 1; i < m+1; i++) {
+            final int a = in.nextInt();
+            final int b = in.nextInt();
+            graph.get(a).add(new Pair(i, b));
+            graph.get(b).add(new Pair(i, a));
+        }
+
+        bridgeCount = 0;
 
         dfsAll();
 
-        out.println(answer.size());
-        answer.sort(Integer::compareTo);
-        for (Integer edge :
-                answer) {
-            out.printf("%d ", edge + 1);
+        out.println(bridgeCount);
+        for (int i = 1; i < m+1 && bridgeCount > 0; i++) {
+            if (isBridge[i]) {
+                out.print(i + " ");
+                bridgeCount--;
+            }
         }
-
         out.flush();
+    }
+
+
+    public static void main(String[] args) {
+        final FastScanner in = new FastScanner(System.in);
+        PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
+        solve(in, out);
     }
 }
