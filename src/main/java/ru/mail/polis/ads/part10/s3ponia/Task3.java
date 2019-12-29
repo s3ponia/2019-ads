@@ -4,7 +4,8 @@ import java.io.*;
 import java.util.*;
 
 /**
- * https://www.e-olymp.com/ru/submissions/6301497
+ * 65%
+ * https://www.e-olymp.com/ru/submissions/6427101
  */
 public class Task3 {
     private static final int INF = 1_000_000;
